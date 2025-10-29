@@ -18,6 +18,7 @@ stages:
     - task: Docker@2
       inputs:
         containerRegistry: 'Docker Hub Service Conn'
-        repository: 'nginx-v5'
+        repository: 'kubernetes'
         command: 'buildAndPush'
         Dockerfile: '**/Dockerfile'
+        tags: '$(nginx-v5)'
