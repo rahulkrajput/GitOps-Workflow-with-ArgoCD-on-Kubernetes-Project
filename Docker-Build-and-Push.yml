@@ -21,4 +21,4 @@ stages:
         repository: 'kubernetes'
         command: 'buildAndPush'
         Dockerfile: '**/Dockerfile'
-        tags: '$(nginx-v5)'
+        tags: '(nginx-v5)'
