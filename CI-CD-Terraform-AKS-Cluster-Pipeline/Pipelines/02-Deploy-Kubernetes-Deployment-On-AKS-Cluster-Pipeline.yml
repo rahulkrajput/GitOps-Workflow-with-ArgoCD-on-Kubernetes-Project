@@ -1,10 +1,10 @@
 # Deploy Kubernetes Deployment On AKS Cluster Pipeline
 
-trigger:
+trigger: none
  
- paths:
-   include:
-     - Pipelines/02-Deploy-Kubernetes-Deployment-On-AKS-Cluster-Pipeline.yml
+#  paths:
+#    include:
+#      - Pipelines/02-Deploy-Kubernetes-Deployment-On-AKS-Cluster-Pipeline.yml
 
 pool: Default
   
@@ -28,7 +28,7 @@ stages:
           inputs:
             action: 'deploy'
             connectionType: 'azureResourceManager'
-            azureSubscriptionConnection: 'terraform-aks-cluster-svc-conn'
+            azureSubscriptionConnection: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
             azureResourceGroup: 'terraform-aks-prod'
             kubernetesCluster: 'terraform-aks-prod-cluster'
             useClusterAdmin: true
@@ -46,7 +46,7 @@ stages:
           inputs:
             action: 'deploy'
             connectionType: 'azureResourceManager'
-            azureSubscriptionConnection: 'terraform-aks-cluster-svc-conn'
+            azureSubscriptionConnection: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
             azureResourceGroup: 'terraform-aks-prod'
             kubernetesCluster: 'terraform-aks-prod-cluster'
             useClusterAdmin: true
@@ -69,10 +69,11 @@ stages:
 #         inputs:
 #           action: 'delete'
 #           connectionType: 'azureResourceManager'
-#           azureSubscriptionConnection: 'terraform-aks-cluster-svc-conn'
+#           azureSubscriptionConnection: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
 #           azureResourceGroup: 'terraform-aks-prod'
 #           kubernetesCluster: 'terraform-aks-prod-cluster'
 #           useClusterAdmin: true
 #           namespace: 'default'
 #           arguments: '-f kubernetes-cluster-manifests/01-Webserver-Apps/'
         
+      
