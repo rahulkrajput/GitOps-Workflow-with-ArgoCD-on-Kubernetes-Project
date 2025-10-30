@@ -71,13 +71,13 @@ stages:
 
 # Stage-03
 
-- stage: DeployNginxAppDeployment
+- stage: DeployWebAppDeployment
   jobs: 
-    - job: DeployNginxAppDeployment
+    - job: DeployWebAppDeployment
       pool: Default
       steps:
         - task: KubernetesManifest@1
-          displayName: Nginx App Deployment
+          displayName: Web App Deployment
           inputs:
             action: 'deploy'
             connectionType: 'azureResourceManager'
@@ -91,13 +91,13 @@ stages:
 
 # Stage-04
 
-- stage: DeployNginxAppService
+- stage: DeployWebAppService
   jobs: 
-    - job: DeployNginxAppService
+    - job: DeployWebAppService
       pool: Default
       steps:
         - task: KubernetesManifest@1
-          displayName: Nginx App Service
+          displayName: Web App Service
           inputs:
             action: 'deploy'
             connectionType: 'azureResourceManager'
