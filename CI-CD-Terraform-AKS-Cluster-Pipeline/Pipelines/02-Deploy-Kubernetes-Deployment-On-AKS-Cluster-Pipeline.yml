@@ -1,0 +1,135 @@
+# Deploy Kubernetes Deployment On AKS Cluster Pipeline
+
+trigger: none
+ 
+#  paths:
+#    include:
+#      - Pipelines/02-Docker-Build-Push-Image-Deploy-Deployment-On-AKS-Cluster-Pipeline.yml
+
+variables:
+  tag: '$(Build.BuildId)'
+
+pool: Default
+  
+# Deploy Nginx App On Cluster
+# Stage-01: Build Docker Image, Copy File From System Directory & Publish the Artifacts to Pipeline WorkSpace
+# Stage-02: Download the Pipeline Artifacts Files & Deploy to AKS Cluster with Docker Image
+# Stage-03: Deploy Web App Deployment
+# Stage-04: Deploy Web App Service (LoadBalancer)
+# Stage-05: When you want Delete Nginx App then Uncomment "delete task" and the re-run pipeline.  
+
+resources:
+- repo: self
+
+
+stages:
+
+# Stage-01
+
+- stage: Build
+  displayName: Build and push stage
+  jobs:
+  - job: Build
+    displayName: Build
+    pool: Default
+    steps:
+    
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'Docker Hub Service Conn for ArgoCD'
+        repository: 'rahulkrajput/kubernetes'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
+        tags: '$(tag)'
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: '$(System.DefaultWorkingDirectory)/kubernetes-cluster-manifests/01-Web-Apps'
+        Contents: '**/*.yaml'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'manifests'
+        publishLocation: 'Container'
+
+
+# Stage-02
+
+- stage: Deploy
+  displayName: Deploy image
+  jobs:  
+  - job: Deploy
+    displayName: Deploy
+    pool: Default
+    steps:
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'current'
+        artifactName: 'manifests'
+        itemPattern: '**/*.yaml'
+        targetPath: '$(System.ArtifactsDirectory)'
+
+# Stage-03
+
+- stage: DeployNginxAppDeployment
+  jobs: 
+    - job: DeployNginxAppDeployment
+      pool: Default
+      steps:
+        - task: KubernetesManifest@1
+          displayName: Nginx App Deployment
+          inputs:
+            action: 'deploy'
+            connectionType: 'azureResourceManager'
+            azureSubscriptionConnection: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+            azureResourceGroup: 'terraform-aks-prod'
+            kubernetesCluster: 'terraform-aks-prod-cluster'
+            useClusterAdmin: true
+            namespace: 'default'
+            manifests: '$(System.ArtifactsDirectory)/kubernetes-cluster-manifests/01-Web-Apps/01-Deployment-Web-App.yml'
+            containers: 'rahulkrajput/kubernetes:$(tag)'
+
+# Stage-04
+
+- stage: DeployNginxAppService
+  jobs: 
+    - job: DeployNginxAppService
+      pool: Default
+      steps:
+        - task: KubernetesManifest@1
+          displayName: Nginx App Service
+          inputs:
+            action: 'deploy'
+            connectionType: 'azureResourceManager'
+            azureSubscriptionConnection: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+            azureResourceGroup: 'terraform-aks-prod'
+            kubernetesCluster: 'terraform-aks-prod-cluster'
+            useClusterAdmin: true
+            namespace: 'default'
+            manifests: '$(System.ArtifactsDirectory)/kubernetes-cluster-manifests/01-Web-Apps/02-Service-Web-App.yml'
+            containers: 'rahulkrajput/kubernetes:$(tag)'
+
+
+
+# When you want Delete Web App then Uncomment "delete task" and the re-run pipeline.  
+
+
+# Stage-05
+# - stage: DeleteNginxApp
+#   jobs: 
+#     - job: DeleteNginxApp
+#       pool: Default
+#       steps:
+#       - task: KubernetesManifest@1
+#         displayName: Delete Nginx App 
+#         inputs:
+#           action: 'delete'
+#           connectionType: 'azureResourceManager'
+#           azureSubscriptionConnection: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+#           azureResourceGroup: 'terraform-aks-prod'
+#           kubernetesCluster: 'terraform-aks-prod-cluster'
+#           useClusterAdmin: true
+#           namespace: 'default'
+#           arguments: '-f kubernetes-cluster-manifests/01-Webserver-Apps/'
+        
+      
