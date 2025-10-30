@@ -39,7 +39,7 @@ stages:
         containerRegistry: 'Docker Hub Service Conn for ArgoCD'
         repository: 'rahulkrajput/kubernetes'
         command: 'buildAndPush'
-        Dockerfile: '**/Dockerfile'
+        Dockerfile: '**/CI-CD-Terraform-AKS-Cluster-Pipeline/Dockerfile'
         tags: '$(tag)'
     - task: CopyFiles@2
       inputs:
