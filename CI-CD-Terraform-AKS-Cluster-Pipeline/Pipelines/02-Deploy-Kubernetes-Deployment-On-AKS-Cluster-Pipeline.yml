@@ -13,9 +13,27 @@ pool: Default
 # Stage-02: Deploy Nginx App Service (LoadBalancer)
 # Stage-03: When you want Delete Nginx App then Uncomment "delete task" and the re-run pipeline.  
 
+resources:
+- repo: self
+
+stages:
+- stage: Build
+  displayName: Build and push stage
+  jobs:
+  - job: Build
+    displayName: Build
+    pool: Default
+    steps:
+    
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'Docker Hub Service Conn'
+        repository: 'rahulkrajput/kubernetes'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
+        tags: 'nginx-v5'
 
 
-stages: 
 
 # Stage-01
 - stage: DeployNginxAppDeployment
