@@ -4,7 +4,7 @@ trigger: none
  
 #  paths:
 #    include:
-#      - Pipelines/02-Deploy-Kubernetes-Deployment-On-AKS-Cluster-Pipeline.yml
+#      - Pipelines/02-Docker-Build-Push-Image-Deploy-Deployment-On-AKS-Cluster-Pipeline.yml
 
 pool: Default
   
@@ -27,7 +27,7 @@ stages:
     
     - task: Docker@2
       inputs:
-        containerRegistry: 'Docker Hub Service Conn'
+        containerRegistry: 'Docker Hub Service Conn for ArgoCD'
         repository: 'rahulkrajput/kubernetes'
         command: 'buildAndPush'
         Dockerfile: '**/Dockerfile'
