@@ -107,3 +107,16 @@ stages:
               #     commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath)'
               #     environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
 
+# Stage-03
+
+  - stage: DeployArgoCD
+    dependsOn: DeployProdCluster
+    jobs:
+      - job: DeployArgoCD
+        displayName: DeployArgoCD
+        pool: Default
+        steps: 
+        - task: Bash@3
+          inputs:
+            filePath: '$(System.DefaultWorkingDirectory)/CI-CD-Terraform-AKS-Cluster-Pipeline/kubernetes-cluster-manifests/02-ArgoCD-Installation-Script/ArgoCD-and-Ingress-Installation-2.sh'
+        
