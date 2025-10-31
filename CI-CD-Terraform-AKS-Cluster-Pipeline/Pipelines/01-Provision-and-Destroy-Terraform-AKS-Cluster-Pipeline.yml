@@ -125,7 +125,7 @@ stages:
             inlineScript: |
               # Commands to get AKS credentials and configure kubectl
               
-              az aks get-credentials --resource-group terraform-aks-prod --name terraform-aks-prod-cluster --admin --overwrite-kubeconfig
+              az aks get-credentials --resource-group terraform-aks-prod --name terraform-aks-prod-cluster --admin
               
               kubectl get nodes
               
