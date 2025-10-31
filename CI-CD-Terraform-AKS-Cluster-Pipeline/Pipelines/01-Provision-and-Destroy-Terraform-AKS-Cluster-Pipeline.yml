@@ -5,7 +5,8 @@ trigger:
      - Pipelines/01-Provision-and-Destroy-Terraform-AKS-Cluster-Pipeline.yml
     
 
-  
+variables:
+    system.debug: 'true'  
 
 pool: Default
   
