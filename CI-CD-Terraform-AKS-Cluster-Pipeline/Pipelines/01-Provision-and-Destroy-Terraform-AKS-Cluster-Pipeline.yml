@@ -31,7 +31,7 @@ stages:
             command: 'init'
             workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
             backendAzureRmUseEntraIdForAuthentication: false
-            backendServiceArm: 'terraform-aks-cluster-svc-conn'
+            backendServiceArm: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
             backendAzureRmResourceGroupName: 'terraform-storage-rg'
             backendAzureRmStorageAccountName: 'terraformstorage05'
             backendAzureRmContainerName: 'tfstatebackupfile'
@@ -74,7 +74,7 @@ stages:
                   command: 'init'
                   workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
                   backendAzureRmUseEntraIdForAuthentication: false
-                  backendServiceArm: 'terraform-aks-cluster-svc-conn'
+                  backendServiceArm: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
                   backendAzureRmResourceGroupName: 'terraform-storage-rg'
                   backendAzureRmStorageAccountName: 'terraformstorage05'
                   backendAzureRmContainerName: 'tfstatebackupfile'
@@ -86,7 +86,7 @@ stages:
                   command: 'plan'
                   workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
                   commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath)'
-                  environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
+                  environmentServiceNameAzureRM: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
               - task: TerraformTask@5
                 displayName: Terrafrom Apply
                 inputs:
@@ -94,7 +94,7 @@ stages:
                   command: 'apply'
                   workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
                   commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath)'
-                  environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
+                  environmentServiceNameAzureRM: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
 
       # When you want De-Comission AKS Cluster then Uncomment "destroy task" and the re-run pipeline.
 
@@ -105,7 +105,7 @@ stages:
               #     command: 'destroy'
               #     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
               #     commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath)'
-              #     environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
+              #     environmentServiceNameAzureRM: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
 
 # Stage-03
 
