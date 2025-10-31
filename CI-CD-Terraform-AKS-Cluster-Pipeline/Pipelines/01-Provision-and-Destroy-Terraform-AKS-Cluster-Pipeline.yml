@@ -29,7 +29,7 @@ stages:
           inputs:
             provider: 'azurerm'
             command: 'init'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/CI-CD-Terraform-AKS-Cluster-Pipeline/terraform-manifests'
             backendAzureRmUseEntraIdForAuthentication: false
             backendServiceArm: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
             backendAzureRmResourceGroupName: 'terraform-storage-rg'
@@ -41,7 +41,7 @@ stages:
           inputs:
             provider: 'azurerm'
             command: 'validate'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/CI-CD-Terraform-AKS-Cluster-Pipeline/terraform-manifests'
 
 # Stage-2: Deploy Stages for Prod Cluster
 
@@ -72,7 +72,7 @@ stages:
                 inputs:
                   provider: 'azurerm'
                   command: 'init'
-                  workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+                  workingDirectory: '$(System.DefaultWorkingDirectory)/CI-CD-Terraform-AKS-Cluster-Pipeline/terraform-manifests'
                   backendAzureRmUseEntraIdForAuthentication: false
                   backendServiceArm: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
                   backendAzureRmResourceGroupName: 'terraform-storage-rg'
@@ -84,7 +84,7 @@ stages:
                 inputs:
                   provider: 'azurerm'
                   command: 'plan'
-                  workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+                  workingDirectory: '$(System.DefaultWorkingDirectory)/CI-CD-Terraform-AKS-Cluster-Pipeline/terraform-manifests'
                   commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath)'
                   environmentServiceNameAzureRM: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
               - task: TerraformTask@5
@@ -92,7 +92,7 @@ stages:
                 inputs:
                   provider: 'azurerm'
                   command: 'apply'
-                  workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+                  workingDirectory: '$(System.DefaultWorkingDirectory)/CI-CD-Terraform-AKS-Cluster-Pipeline/terraform-manifests'
                   commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath)'
                   environmentServiceNameAzureRM: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
 
@@ -103,7 +103,7 @@ stages:
               #   inputs:
               #     provider: 'azurerm'
               #     command: 'destroy'
-              #     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+              #     workingDirectory: '$(System.DefaultWorkingDirectory)/CI-CD-Terraform-AKS-Cluster-Pipeline/terraform-manifests'
               #     commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath)'
               #     environmentServiceNameAzureRM: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
 
