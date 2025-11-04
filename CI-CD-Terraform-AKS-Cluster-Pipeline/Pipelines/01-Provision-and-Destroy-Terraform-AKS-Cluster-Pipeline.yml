@@ -121,9 +121,9 @@ stages:
               script: |
                 # Commands to get AKS credentials and configure kubectl
                               
-                  #  az aks get-credentials --resource-group terraform-aks-prod --name terraform-aks-prod-cluster --admin
+                  az aks get-credentials --resource-group terraform-aks-prod --name terraform-aks-prod-cluster --admin
                               
-                  #  kubectl get nodes
+                  kubectl get nodes
                 
                 #!/bin/bash
                 
