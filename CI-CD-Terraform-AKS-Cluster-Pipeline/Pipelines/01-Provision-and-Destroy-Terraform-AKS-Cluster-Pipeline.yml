@@ -116,14 +116,20 @@ stages:
           displayName: DeployArgoCD
           pool: Default
           steps: 
-          - task: CmdLine@2
+          - task: Kubernetes@1
             inputs:
-              script: |
-                # Commands to get AKS credentials and configure kubectl
-                              
-                  az aks get-credentials --resource-group terraform-aks-prod --name terraform-aks-prod-cluster --admin
-                              
-                  kubectl get nodes
+              connectionType: 'Azure Resource Manager'
+              azureSubscriptionEndpoint: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+              azureResourceGroup: 'terraform-aks-prod'
+              kubernetesCluster: 'terraform-aks-prod-cluster'
+              useClusterAdmin: true
+              command: 
+              useConfigurationFile: true
+              configurationType: 'inline'
+              inline: |
+                az aks get-credentials --resource-group terraform-aks-prod --name terraform-aks-prod-cluster --admin
+                
+                kubectl get nodes
                 
                 #!/bin/bash
                 
@@ -186,16 +192,16 @@ stages:
                 spec:
                   ingressClassName: nginx
                   rules:
-                   - host: argocd.cap # Add Your Domain
-                     http:
-                       paths:
-                       - path: /
-                         pathType: Prefix
-                         backend:
-                           service:
-                             name: argocd-server
-                             port:
-                               number: 80
+                  - host: argocd.cap # Add Your Domain
+                    http:
+                      paths:
+                      - path: /
+                        pathType: Prefix
+                        backend:
+                          service:
+                            name: argocd-server
+                            port:
+                              number: 80
                     
                 EOF
                 
@@ -230,6 +236,8 @@ stages:
                 kubectl get svc argocd-server -n argocd
                 echo "ArgoCD Ingress:"
                 kubectl get ingress -n argocd
+              secretType: 'dockerRegistry'
+              containerRegistryType: 'Azure Container Registry'
 
 
 # Stage-03
