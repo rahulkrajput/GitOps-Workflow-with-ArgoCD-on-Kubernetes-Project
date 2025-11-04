@@ -124,13 +124,12 @@ stages:
               kubernetesCluster: 'terraform-aks-prod-cluster'
               useClusterAdmin: true
               command: 
-              useConfigurationFile: true
-              configurationType: 'inline'
-              inline: |
-                az aks get-credentials --resource-group terraform-aks-prod --name terraform-aks-prod-cluster --admin
-                
-                kubectl get nodes
-                
+              secretType: 'dockerRegistry'
+              containerRegistryType: 'Azure Container Registry'
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: |
                 #!/bin/bash
                 
                 # Set error handling
@@ -192,16 +191,16 @@ stages:
                 spec:
                   ingressClassName: nginx
                   rules:
-                  - host: argocd.cap # Add Your Domain
-                    http:
-                      paths:
-                      - path: /
-                        pathType: Prefix
-                        backend:
-                          service:
-                            name: argocd-server
-                            port:
-                              number: 80
+                   - host: argocd.cap # Add Your Domain
+                     http:
+                       paths:
+                       - path: /
+                         pathType: Prefix
+                         backend:
+                           service:
+                             name: argocd-server
+                             port:
+                               number: 80
                     
                 EOF
                 
@@ -236,8 +235,6 @@ stages:
                 kubectl get svc argocd-server -n argocd
                 echo "ArgoCD Ingress:"
                 kubectl get ingress -n argocd
-              secretType: 'dockerRegistry'
-              containerRegistryType: 'Azure Container Registry'
 
 
 # Stage-03
