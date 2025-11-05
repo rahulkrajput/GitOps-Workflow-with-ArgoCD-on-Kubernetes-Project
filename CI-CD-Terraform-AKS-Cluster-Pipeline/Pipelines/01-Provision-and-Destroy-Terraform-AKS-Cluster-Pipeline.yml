@@ -188,7 +188,7 @@ stages:
                 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
                 
                 echo "⏳ Waiting for ArgoCD pods to be ready..."
-                kubectl wait --for=condition=ready pod -n argocd --timeout=300s
+                kubectl wait --for=condition=ready pod -n argocd --timeout=120s
                 
                 echo "🔧 Patching ArgoCD server deployment to add '--insecure' flag..."
                 kubectl patch deployment argocd-server -n argocd --type='json' \
@@ -230,7 +230,7 @@ stages:
                 kubectl rollout restart deployment argocd-server -n argocd
                 
                 echo "⏳ Waiting for ArgoCD server to be ready (this may take a few minutes)..."
-                if kubectl rollout status deployment argocd-server -n argocd --timeout=300s; then
+                if kubectl rollout status deployment argocd-server -n argocd --timeout=180s; then
                     echo "✅ ArgoCD server deployment successfully restarted"
                 else
                     echo "❌ ArgoCD server deployment failed to restart within the timeout period"
