@@ -155,7 +155,7 @@ stages:
               scriptLocation: 'inlineScript'
               inlineScript: |
                 echo "Install Nginx Ingress Controller...."
-                                kubectl apply -f https://kind.sigs.k8s.io/examples/ingress/deploy-ingress-nginx.yaml
+                kubectl apply -f https://kind.sigs.k8s.io/examples/ingress/deploy-ingress-nginx.yaml
                 
                 echo "Wait For Nginx Ingress Controller Pod Ready...."
                 kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=90s
@@ -181,14 +181,14 @@ stages:
               scriptLocation: 'inlineScript'
               inlineScript: |
                 echo "⏳ Waiting for ArgoCD pods to be ready..."
-                                kubectl wait --for=condition=ready pod --all --namespace argocd --timeout=90s
+                kubectl wait --for=condition=ready pod --all --namespace argocd --timeout=90s
           - task: AzureCLI@2
             inputs:
               azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
-                echo "  Patching ArgoCD server deployment to add '--insecure' flag..."
+                echo "Patching ArgoCD server deployment to add '--insecure' flag..."
                                 kubectl patch deployment argocd-server --namespace argocd --type='json' \
                                   -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--insecure"}]'
           - task: AzureCLI@2
@@ -197,7 +197,7 @@ stages:
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
-                echo "  Updating ArgoCD ConfigMap..."
+                echo "Updating ArgoCD ConfigMap..."
                                 kubectl patch configmap argocd-cmd-params-cm --namespace argocd --type merge \
                                     -p '{"data":{"server.insecure":"true"}}'
           - task: AzureCLI@2
@@ -206,7 +206,7 @@ stages:
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
-                echo "  Creating Ingress resource..."
+                echo "Creating Ingress resource..."
                                 cat <<EOF | kubectl apply -f -
                                 apiVersion: networking.k8s.io/v1
                                 kind: Ingress
@@ -239,7 +239,7 @@ stages:
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
-                echo "  Restarting ArgoCD server deployment..."
+                echo "Restarting ArgoCD server deployment..."
                                 kubectl rollout restart deployment argocd-server --namespace argocd
           - task: AzureCLI@2
             inputs:
@@ -256,7 +256,7 @@ stages:
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
-                echo "  Retrieving initial admin password..."
+                echo "Retrieving initial admin password..."
                                 ARGO_PASSWORD=$(kubectl --namespace argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
                                 
                                 echo "✅ ArgoCD deployment completed!"
@@ -272,7 +272,7 @@ stages:
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
-                echo "  Deployment Status:"
+                echo "Deployment Status:"
                                 echo "ArgoCD Pods:"
                                 kubectl get pods -n argocd
                                 echo "ArgoCD Service:"
