@@ -174,14 +174,14 @@ stages:
                 echo "Installing ArgoCD..."
                 
                 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-          - task: AzureCLI@2
-            inputs:
-              azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
-              scriptType: 'bash'
-              scriptLocation: 'inlineScript'
-              inlineScript: |
-                echo "⏳ Waiting for ArgoCD pods to be ready..."
-                kubectl wait --for=condition=ready pod --all --namespace argocd --timeout=90s
+          # - task: AzureCLI@2
+          #   inputs:
+          #     azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+          #     scriptType: 'bash'
+          #     scriptLocation: 'inlineScript'
+          #     inlineScript: |
+          #       echo "⏳ Waiting for ArgoCD pods to be ready..."
+          #       kubectl wait --for=condition=ready pod --all --namespace argocd --timeout=90s
           - task: AzureCLI@2
             inputs:
               azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
