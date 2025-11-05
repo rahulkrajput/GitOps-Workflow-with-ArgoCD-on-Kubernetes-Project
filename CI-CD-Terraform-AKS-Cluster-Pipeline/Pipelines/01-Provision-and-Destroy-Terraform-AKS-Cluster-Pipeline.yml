@@ -148,16 +148,18 @@ stages:
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: 'kubectl get nodes'
-          - task: Bash@3
+          - task: AzureCLI@2
             inputs:
-              targetType: 'inline'
-              script: |
+              azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
                 #!/bin/bash
                 
                 # Set error handling
                 set -e
                 
-                echo "🚀 Starting ArgoCD deployment automation..."
+                echo "  Starting ArgoCD deployment automation..."
                 
                 # Function to check if a command exists
                 command_exists() {
@@ -174,7 +176,7 @@ stages:
                 if kubectl get namespace argocd >/dev/null 2>&1; then
                     echo "✅ ArgoCD namespace already exists"
                 else
-                    echo "📑 Creating ArgoCD namespace..."
+                    echo "  Creating ArgoCD namespace..."
                     kubectl create namespace argocd
                 fi
                 
@@ -184,21 +186,21 @@ stages:
                 echo "Wait For Nginx Ingress Controller Pod Ready...."
                 kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=90s
                 
-                echo "📦 Installing ArgoCD..."
+                echo "  Installing ArgoCD..."
                 kubectl apply --namespace argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
                 
                 echo "⏳ Waiting for ArgoCD pods to be ready..."
                 kubectl wait --for=condition=ready pod --all --namespace argocd --timeout=90s
                 
-                echo "🔧 Patching ArgoCD server deployment to add '--insecure' flag..."
+                echo "  Patching ArgoCD server deployment to add '--insecure' flag..."
                 kubectl patch deployment argocd-server --namespace argocd --type='json' \
                   -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--insecure"}]'
                 
-                echo "📝 Updating ArgoCD ConfigMap..."
+                echo "  Updating ArgoCD ConfigMap..."
                 kubectl patch configmap argocd-cmd-params-cm --namespace argocd --type merge \
                     -p '{"data":{"server.insecure":"true"}}'
                 
-                echo "🌐 Creating Ingress resource..."
+                echo "  Creating Ingress resource..."
                 cat <<EOF | kubectl apply -f -
                 apiVersion: networking.k8s.io/v1
                 kind: Ingress
@@ -226,7 +228,7 @@ stages:
                     
                 EOF
                 
-                echo "🔄 Restarting ArgoCD server deployment..."
+                echo "  Restarting ArgoCD server deployment..."
                 kubectl rollout restart deployment argocd-server --namespace argocd
                 
                 echo "⏳ Waiting for ArgoCD server to be ready (this may take a few minutes)..."
@@ -238,11 +240,11 @@ stages:
                 fi
                 
                 # Get initial admin password
-                echo "🔑 Retrieving initial admin password..."
+                echo "  Retrieving initial admin password..."
                 ARGO_PASSWORD=$(kubectl --namespace argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
                 
                 echo "✅ ArgoCD deployment completed!"
-                echo "📋 Installation Summary:"
+                echo "  Installation Summary:"
                 echo "------------------------"
                 echo "Username: admin"
                 echo "Password: $ARGO_PASSWORD"
@@ -250,13 +252,122 @@ stages:
                 echo "------------------------"
                 
                 # Verify deployment
-                echo "📊 Deployment Status:"
+                echo "  Deployment Status:"
                 echo "ArgoCD Pods:"
                 kubectl get pods -n argocd
                 echo "ArgoCD Service:"
                 kubectl get svc argocd-server -n argocd
                 echo "ArgoCD Ingress:"
                 kubectl get ingress -n argocd
+          # - task: Bash@3
+          #   inputs:
+          #     targetType: 'inline'
+          #     script: |
+          #       #!/bin/bash
+                
+          #       # Set error handling
+          #       set -e
+                
+          #       echo "🚀 Starting ArgoCD deployment automation..."
+                
+          #       # Function to check if a command exists
+          #       command_exists() {
+          #           command -v "$1" >/dev/null 2>&1
+          #       }
+                
+          #       # Check prerequisites
+          #       if ! command_exists kubectl; then
+          #           echo "❌ kubectl is not installed. Please install kubectl first."
+          #           exit 1
+          #       fi
+                                
+          #       # Check if namespace exists
+          #       if kubectl get namespace argocd >/dev/null 2>&1; then
+          #           echo "✅ ArgoCD namespace already exists"
+          #       else
+          #           echo "📑 Creating ArgoCD namespace..."
+          #           kubectl create namespace argocd
+          #       fi
+                
+          #       echo "Install Nginx Ingress Controller...."
+          #       kubectl apply -f https://kind.sigs.k8s.io/examples/ingress/deploy-ingress-nginx.yaml
+                
+          #       echo "Wait For Nginx Ingress Controller Pod Ready...."
+          #       kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=90s
+                
+          #       echo "📦 Installing ArgoCD..."
+          #       kubectl apply --namespace argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+                
+          #       echo "⏳ Waiting for ArgoCD pods to be ready..."
+          #       kubectl wait --for=condition=ready pod --all --namespace argocd --timeout=90s
+                
+          #       echo "🔧 Patching ArgoCD server deployment to add '--insecure' flag..."
+          #       kubectl patch deployment argocd-server --namespace argocd --type='json' \
+          #         -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--insecure"}]'
+                
+          #       echo "📝 Updating ArgoCD ConfigMap..."
+          #       kubectl patch configmap argocd-cmd-params-cm --namespace argocd --type merge \
+          #           -p '{"data":{"server.insecure":"true"}}'
+                
+          #       echo "🌐 Creating Ingress resource..."
+          #       cat <<EOF | kubectl apply -f -
+          #       apiVersion: networking.k8s.io/v1
+          #       kind: Ingress
+          #       metadata:
+          #         name: argocd-server-ingress
+          #         namespace: argocd
+          #         annotations:
+          #           kubernetes.io/ingress.class: "nginx"
+          #           nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+          #           nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+          #           nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+          #       spec:
+          #         ingressClassName: nginx
+          #         rules:
+          #          - host: argocd.cap # Add Your Domain
+          #            http:
+          #              paths:
+          #              - path: /
+          #                pathType: Prefix
+          #                backend:
+          #                  service:
+          #                    name: argocd-server
+          #                    port:
+          #                      number: 80
+                    
+          #       EOF
+                
+          #       echo "🔄 Restarting ArgoCD server deployment..."
+          #       kubectl rollout restart deployment argocd-server --namespace argocd
+                
+          #       echo "⏳ Waiting for ArgoCD server to be ready (this may take a few minutes)..."
+          #       if kubectl rollout status deployment argocd-server --namespace argocd --timeout=90s; then
+          #           echo "✅ ArgoCD server deployment successfully restarted"
+          #       else
+          #           echo "❌ ArgoCD server deployment failed to restart within the timeout period"
+          #           exit 1
+          #       fi
+                
+          #       # Get initial admin password
+          #       echo "🔑 Retrieving initial admin password..."
+          #       ARGO_PASSWORD=$(kubectl --namespace argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
+                
+          #       echo "✅ ArgoCD deployment completed!"
+          #       echo "📋 Installation Summary:"
+          #       echo "------------------------"
+          #       echo "Username: admin"
+          #       echo "Password: $ARGO_PASSWORD"
+          #       echo "URL: http://<your-ingress-ip>/"
+          #       echo "------------------------"
+                
+          #       # Verify deployment
+          #       echo "📊 Deployment Status:"
+          #       echo "ArgoCD Pods:"
+          #       kubectl get pods -n argocd
+          #       echo "ArgoCD Service:"
+          #       kubectl get svc argocd-server -n argocd
+          #       echo "ArgoCD Ingress:"
+          #       kubectl get ingress -n argocd
 
 
 # Stage-03
