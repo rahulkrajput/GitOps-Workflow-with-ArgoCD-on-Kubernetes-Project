@@ -138,7 +138,7 @@ stages:
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
-                az aks get-credentials --resource-group terraform-aks-prod --name terraform-aks-prod-cluster --admin
+                az aks get-credentials --resource-group terraform-aks-prod --name terraform-aks-prod-cluster  --overwrite-existing
                 
                 kubelogin convert-kubeconfig -l azurecli
           - task: AzureCLI@2
