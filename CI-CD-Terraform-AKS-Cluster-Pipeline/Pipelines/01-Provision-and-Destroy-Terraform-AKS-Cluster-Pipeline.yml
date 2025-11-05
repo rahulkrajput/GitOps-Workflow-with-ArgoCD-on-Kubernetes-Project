@@ -188,7 +188,7 @@ stages:
                 kubectl apply --namespace argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
                 
                 echo "⏳ Waiting for ArgoCD pods to be ready..."
-                kubectl wait --for=condition=ready pod --namespace argocd --timeout=90s
+                kubectl wait --for=condition=ready pod --all --namespace argocd --timeout=90s
                 
                 echo "🔧 Patching ArgoCD server deployment to add '--insecure' flag..."
                 kubectl patch deployment argocd-server --namespace argocd --type='json' \
