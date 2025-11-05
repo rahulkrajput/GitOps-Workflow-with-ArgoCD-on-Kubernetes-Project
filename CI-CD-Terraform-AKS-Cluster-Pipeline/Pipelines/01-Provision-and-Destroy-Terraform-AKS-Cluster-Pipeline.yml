@@ -99,180 +99,186 @@ stages:
 
       # When you want De-Comission AKS Cluster then Uncomment "destroy task" and the re-run pipeline.
 
-              - task: TerraformTask@5
-                displayName: Terrafrom Destroy
-                inputs:
-                  provider: 'azurerm'
-                  command: 'destroy'
-                  workingDirectory: '$(System.DefaultWorkingDirectory)/CI-CD-Terraform-AKS-Cluster-Pipeline/terraform-manifests'
-                  commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath)'
-                  environmentServiceNameAzureRM: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+              # - task: TerraformTask@5
+              #   displayName: Terrafrom Destroy
+              #   inputs:
+              #     provider: 'azurerm'
+              #     command: 'destroy'
+              #     workingDirectory: '$(System.DefaultWorkingDirectory)/CI-CD-Terraform-AKS-Cluster-Pipeline/terraform-manifests'
+              #     commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath)'
+              #     environmentServiceNameAzureRM: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
 
 
-  # - stage: DeployArgoCD
-  #   dependsOn: DeployProdCluster
-  #   jobs:
-  #       - job: DeployArgoCD
-  #         displayName: DeployArgoCD
-  #         pool: Default
-  #         steps: 
-  #         - task: Kubernetes@1
-  #           inputs:
-  #             connectionType: 'Azure Resource Manager'
-  #             azureSubscriptionEndpoint: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
-  #             azureResourceGroup: 'terraform-aks-prod'
-  #             kubernetesCluster: 'terraform-aks-prod-cluster'
-  #             useClusterAdmin: true
-  #             command: 
-  #             secretType: 'dockerRegistry'
-  #             containerRegistryType: 'Azure Container Registry'
-  #         - task: KubeloginInstaller@0
-  #           displayName: Install kubelogin
-  #           inputs:
-  #             kubeloginVersion: 'latest'
-  #             gitHubConnection: 'GIT-svc-conn-for-GitOps-Workflow-with-ArgoCD-on-Terraform-AKS-Cluster'
-  #         - task: AzureCLI@2
-  #           displayName: Get AKS Credentials
-  #           inputs:
-  #             azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
-  #             scriptType: 'bash'
-  #             scriptLocation: 'inlineScript'
-  #             inlineScript: |
-  #               az aks get-credentials --resource-group terraform-aks-prod --name terraform-aks-prod-cluster --admin --overwrite-existing
+  - stage: DeployArgoCD
+    dependsOn: DeployProdCluster
+    jobs:
+        - job: DeployArgoCD
+          displayName: DeployArgoCD
+          pool: Default
+          steps: 
+          - task: Kubernetes@1
+            inputs:
+              connectionType: 'Azure Resource Manager'
+              azureSubscriptionEndpoint: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+              azureResourceGroup: 'terraform-aks-prod'
+              kubernetesCluster: 'terraform-aks-prod-cluster'
+              useClusterAdmin: true
+              command: 
+              secretType: 'dockerRegistry'
+              containerRegistryType: 'Azure Container Registry'
+          - task: KubeloginInstaller@0
+            displayName: Install kubelogin
+            inputs:
+              kubeloginVersion: 'latest'
+              gitHubConnection: 'GIT-svc-conn-for-GitOps-Workflow-with-ArgoCD-on-Terraform-AKS-Cluster'
+          - task: AzureCLI@2
+            displayName: Get AKS Credentials
+            inputs:
+              azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                az aks get-credentials --resource-group terraform-aks-prod --name terraform-aks-prod-cluster --admin --overwrite-existing
                 
-  #               kubelogin convert-kubeconfig -l azurecli
-  #         - task: AzureCLI@2
-  #           displayName: List AKS Nodes
-  #           inputs:
-  #             azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
-  #             scriptType: 'bash'
-  #             scriptLocation: 'inlineScript'
-  #             inlineScript: 'kubectl get nodes'
-  #         - task: AzureCLI@2
-  #           inputs:
-  #             azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
-  #             scriptType: 'bash'
-  #             scriptLocation: 'inlineScript'
-  #             inlineScript: |
-  #               echo "Install Nginx Ingress Controller...."
-  #                               kubectl apply -f https://kind.sigs.k8s.io/examples/ingress/deploy-ingress-nginx.yaml
+                kubelogin convert-kubeconfig -l azurecli
+          - task: AzureCLI@2
+            displayName: List AKS Nodes
+            inputs:
+              azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: 'kubectl get nodes'
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                echo "Install Nginx Ingress Controller...."
+                                kubectl apply -f https://kind.sigs.k8s.io/examples/ingress/deploy-ingress-nginx.yaml
                 
-  #               echo "Wait For Nginx Ingress Controller Pod Ready...."
-  #                               kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=90s
-  #         - task: AzureCLI@2
-  #           inputs:
-  #             azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
-  #             scriptType: 'bash'
-  #             scriptLocation: 'inlineScript'
-  #             inlineScript: |
-  #               echo "  Installing ArgoCD..."
+                echo "Wait For Nginx Ingress Controller Pod Ready...."
+                kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=90s
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: 'kubectl create namespace argocd'
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                echo "Installing ArgoCD..."
                 
-  #               kubectl apply --namespace argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-  #         - task: AzureCLI@2
-  #           inputs:
-  #             azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
-  #             scriptType: 'bash'
-  #             scriptLocation: 'inlineScript'
-  #             inlineScript: |
-  #               echo "⏳ Waiting for ArgoCD pods to be ready..."
-  #                               kubectl wait --for=condition=ready pod --all --namespace argocd --timeout=90s
-  #         - task: AzureCLI@2
-  #           inputs:
-  #             azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
-  #             scriptType: 'bash'
-  #             scriptLocation: 'inlineScript'
-  #             inlineScript: |
-  #               echo "  Patching ArgoCD server deployment to add '--insecure' flag..."
-  #                               kubectl patch deployment argocd-server --namespace argocd --type='json' \
-  #                                 -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--insecure"}]'
-  #         - task: AzureCLI@2
-  #           inputs:
-  #             azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
-  #             scriptType: 'bash'
-  #             scriptLocation: 'inlineScript'
-  #             inlineScript: |
-  #               echo "  Updating ArgoCD ConfigMap..."
-  #                               kubectl patch configmap argocd-cmd-params-cm --namespace argocd --type merge \
-  #                                   -p '{"data":{"server.insecure":"true"}}'
-  #         - task: AzureCLI@2
-  #           inputs:
-  #             azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
-  #             scriptType: 'bash'
-  #             scriptLocation: 'inlineScript'
-  #             inlineScript: |
-  #               echo "  Creating Ingress resource..."
-  #                               cat <<EOF | kubectl apply -f -
-  #                               apiVersion: networking.k8s.io/v1
-  #                               kind: Ingress
-  #                               metadata:
-  #                                 name: argocd-server-ingress
-  #                                 namespace: argocd
-  #                                 annotations:
-  #                                   kubernetes.io/ingress.class: "nginx"
-  #                                   nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
-  #                                   nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-  #                                   nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-  #                               spec:
-  #                                 ingressClassName: nginx
-  #                                 rules:
-  #                                  - host: argocd.cap # Add Your Domain
-  #                                    http:
-  #                                      paths:
-  #                                      - path: /
-  #                                        pathType: Prefix
-  #                                        backend:
-  #                                          service:
-  #                                            name: argocd-server
-  #                                            port:
-  #                                              number: 80
+                kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                echo "⏳ Waiting for ArgoCD pods to be ready..."
+                                kubectl wait --for=condition=ready pod --all --namespace argocd --timeout=90s
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                echo "  Patching ArgoCD server deployment to add '--insecure' flag..."
+                                kubectl patch deployment argocd-server --namespace argocd --type='json' \
+                                  -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--insecure"}]'
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                echo "  Updating ArgoCD ConfigMap..."
+                                kubectl patch configmap argocd-cmd-params-cm --namespace argocd --type merge \
+                                    -p '{"data":{"server.insecure":"true"}}'
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                echo "  Creating Ingress resource..."
+                                cat <<EOF | kubectl apply -f -
+                                apiVersion: networking.k8s.io/v1
+                                kind: Ingress
+                                metadata:
+                                  name: argocd-server-ingress
+                                  namespace: argocd
+                                  annotations:
+                                    kubernetes.io/ingress.class: "nginx"
+                                    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+                                    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+                                    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+                                spec:
+                                  ingressClassName: nginx
+                                  rules:
+                                   - host: argocd.cap # Add Your Domain
+                                     http:
+                                       paths:
+                                       - path: /
+                                         pathType: Prefix
+                                         backend:
+                                           service:
+                                             name: argocd-server
+                                             port:
+                                               number: 80
                                     
-  #                               EOF
-  #         - task: AzureCLI@2
-  #           inputs:
-  #             azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
-  #             scriptType: 'bash'
-  #             scriptLocation: 'inlineScript'
-  #             inlineScript: |
-  #               echo "  Restarting ArgoCD server deployment..."
-  #                               kubectl rollout restart deployment argocd-server --namespace argocd
-  #         - task: AzureCLI@2
-  #           inputs:
-  #             azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
-  #             scriptType: 'bash'
-  #             scriptLocation: 'inlineScript'
-  #             inlineScript: |
-  #               echo "⏳ Waiting for ArgoCD server to be ready (this may take a few minutes)..."
-  #                               if kubectl rollout status deployment argocd-server --namespace argocd --timeout=90s; then
-  #                                   echo "✅ ArgoCD server deployment successfully restarted"
-  #         - task: AzureCLI@2
-  #           inputs:
-  #             azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
-  #             scriptType: 'bash'
-  #             scriptLocation: 'inlineScript'
-  #             inlineScript: |
-  #               echo "  Retrieving initial admin password..."
-  #                               ARGO_PASSWORD=$(kubectl --namespace argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
+                                EOF
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                echo "  Restarting ArgoCD server deployment..."
+                                kubectl rollout restart deployment argocd-server --namespace argocd
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                echo "⏳ Waiting for ArgoCD server to be ready (this may take a few minutes)..."
+                                if kubectl rollout status deployment argocd-server --namespace argocd --timeout=90s; then
+                                    echo "✅ ArgoCD server deployment successfully restarted"
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                echo "  Retrieving initial admin password..."
+                                ARGO_PASSWORD=$(kubectl --namespace argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
                                 
-  #                               echo "✅ ArgoCD deployment completed!"
-  #                               echo "  Installation Summary:"
-  #                               echo "------------------------"
-  #                               echo "Username: admin"
-  #                               echo "Password: $ARGO_PASSWORD"
-  #                               echo "URL: http://<your-ingress-ip>/"
-  #                               echo "------------------------"
-  #         - task: AzureCLI@2
-  #           inputs:
-  #             azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
-  #             scriptType: 'bash'
-  #             scriptLocation: 'inlineScript'
-  #             inlineScript: |
-  #               echo "  Deployment Status:"
-  #                               echo "ArgoCD Pods:"
-  #                               kubectl get pods -n argocd
-  #                               echo "ArgoCD Service:"
-  #                               kubectl get svc argocd-server -n argocd
-  #                               echo "ArgoCD Ingress:"
-  #                               kubectl get ingress -n argocd
+                                echo "✅ ArgoCD deployment completed!"
+                                echo "  Installation Summary:"
+                                echo "------------------------"
+                                echo "Username: admin"
+                                echo "Password: $ARGO_PASSWORD"
+                                echo "URL: http://<your-ingress-ip>/"
+                                echo "------------------------"
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                echo "  Deployment Status:"
+                                echo "ArgoCD Pods:"
+                                kubectl get pods -n argocd
+                                echo "ArgoCD Service:"
+                                kubectl get svc argocd-server -n argocd
+                                echo "ArgoCD Ingress:"
+                                kubectl get ingress -n argocd
           # - task: AzureCLI@2
           #   inputs:
           #     azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
