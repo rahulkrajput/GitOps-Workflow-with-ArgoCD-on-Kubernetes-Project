@@ -185,17 +185,17 @@ stages:
                 kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=90s
                 
                 echo "📦 Installing ArgoCD..."
-                kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+                kubectl apply --namespace argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
                 
                 echo "⏳ Waiting for ArgoCD pods to be ready..."
-                kubectl wait --for=condition=ready pod -n argocd --timeout=120s
+                kubectl wait --for=condition=ready pod --namespace argocd --timeout=120s
                 
                 echo "🔧 Patching ArgoCD server deployment to add '--insecure' flag..."
-                kubectl patch deployment argocd-server -n argocd --type='json' \
+                kubectl patch deployment argocd-server --namespace argocd --type='json' \
                   -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--insecure"}]'
                 
                 echo "📝 Updating ArgoCD ConfigMap..."
-                kubectl patch configmap argocd-cmd-params-cm -n argocd --type merge \
+                kubectl patch configmap argocd-cmd-params-cm --namespace argocd --type merge \
                     -p '{"data":{"server.insecure":"true"}}'
                 
                 echo "🌐 Creating Ingress resource..."
@@ -227,10 +227,10 @@ stages:
                 EOF
                 
                 echo "🔄 Restarting ArgoCD server deployment..."
-                kubectl rollout restart deployment argocd-server -n argocd
+                kubectl rollout restart deployment argocd-server --namespace argocd
                 
                 echo "⏳ Waiting for ArgoCD server to be ready (this may take a few minutes)..."
-                if kubectl rollout status deployment argocd-server -n argocd --timeout=180s; then
+                if kubectl rollout status deployment argocd-server --namespace argocd --timeout=120s; then
                     echo "✅ ArgoCD server deployment successfully restarted"
                 else
                     echo "❌ ArgoCD server deployment failed to restart within the timeout period"
@@ -239,7 +239,7 @@ stages:
                 
                 # Get initial admin password
                 echo "🔑 Retrieving initial admin password..."
-                ARGO_PASSWORD=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
+                ARGO_PASSWORD=$(kubectl --namespace argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
                 
                 echo "✅ ArgoCD deployment completed!"
                 echo "📋 Installation Summary:"
