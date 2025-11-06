@@ -255,7 +255,7 @@ metadata:
 spec:
   
   rules:
-  - host: argocd.ubei.info
+  - host: argocd.ubei.info # Add Your Domain
     http:
       paths:
       - path: /
@@ -298,6 +298,68 @@ metadata:
   uid: bceeb42d-ded5-4b3a-acbb-03639e4f1b1d
 
 ```
+## Step-13: Create DNS Zone 
+
+-	Go to Azure Portal and Search -> **DNS Zones**
+-	Subscription: Your_Subscription 
+-	Resource Group: terraform-aks-prod-nrg
+-	Name: ubei.info (Zone Name)
+-	Resource Group Location: centralindia
+-	Click on Review + Create
+
+## Step-13A: Copy Azure Nameservers Name
+
+ -	Go to Azure Portal and Search -> DNS Zones-> ubei.info-> Overview
+```
+ns3-05.azure-dns.org	
+ns2-05.azure-dns.net	
+ns1-05.azure-dns.com	
+ns4-05.azure-dns.info	
+
+```
+## Step-14: Go to Your Domain Registrar Update Nameservers 
+
+- Verify before updation
+
+```
+nslookup -type=SOA ubei.info
+nslookup -type=NS ubei.info
+
+# Output:
+
+<img width="663" height="319" alt="Image" src="https://github.com/user-attachments/assets/53e9e5f3-35c3-4c38-89e0-3817e270470d" />
+
+
+```
+
+-	Login into your Domain Provider Account (My Domain Registrar: ionos.com)
+-	Click on Add or edit name servers
+-	Update Azure Name servers here and click on Save
+-	Wait for Next 48 hours (but usually it update Name Servers within 3-4 hours)
+-	Verify after updation
+
+```
+nslookup -type=NS ubei.info 8.8.8.8
+nslookup -type=SOA ubei.info 8.8.8.8
+
+
+# Output:
+
+<img width="877" height="614" alt="Image" src="https://github.com/user-attachments/assets/8926082f-3f0c-46a2-ba61-1cb6034774cd" />
+
+
+```
+##  Step-15: 
+
+-	Go to RecordSet
+-	Click on Add
+-	Type Name : argocd
+-	Value : Type your External-IP Address (Which you got when you created Ingress Controller. If want to know about it, go to Terminal & type “ kubectl get svc -n ingress-nginx ”) 
+-	Go to Browser type Your host name “argocd.ubei.info”
+
+Output: 
+
+<img width="975" height="638" alt="Image" src="https://github.com/user-attachments/assets/57a8b726-5f4a-465e-ba52-7dc1c3e70cd3" />
 
 
 ## Step-11: Delete Resources
