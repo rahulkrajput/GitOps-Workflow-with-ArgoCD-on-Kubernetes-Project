@@ -351,7 +351,7 @@ Output:
 
 
 
-##  Step-15: 
+##  Step-15: Now, Create A record in DNS Zone (ubei.info)
 
 -	Go to RecordSet
 -	Click on Add
