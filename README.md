@@ -364,6 +364,23 @@ Output:
 <img width="975" height="638" alt="Image" src="https://github.com/user-attachments/assets/57a8b726-5f4a-465e-ba52-7dc1c3e70cd3" />
 
 
+## Step-16: Logon ArgoCD Dashboard
+
+To log in to ArgoCD Dashboard, you need to have Credentials First for that.
+- Go to Your Terminal and type the following Command:
+
+```
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+
+# Output
+
+Username:  admin
+Password:  rMDFxtgp0456-
+
+```
+
+
+
 ## Step-11: Delete Resources
 Delete the Resources either through the Pipeline Or Manually 
 
