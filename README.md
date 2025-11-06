@@ -273,7 +273,7 @@ kubectl apply -f nginx-ingress.yml
 ```
 kubectl get ingress -n argocd
 ```
-Output 
+Output:
 
 <img width="650" height="70" alt="Image" src="https://github.com/user-attachments/assets/a02068de-b49b-4dc0-815f-9a7d8b033feb" />
 
@@ -323,7 +323,6 @@ ns3-05.azure-dns.org
 ns2-05.azure-dns.net	
 ns1-05.azure-dns.com	
 ns4-05.azure-dns.info	
-
 ```
 ## Step-14: Go to Your Domain Registrar Update Nameservers 
 
