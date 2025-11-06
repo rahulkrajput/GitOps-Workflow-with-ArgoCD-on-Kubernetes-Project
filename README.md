@@ -216,7 +216,89 @@ kubectl cluster-info
 
 # List Kubernetes Worker Nodes
 kubectl get nodes
+
+# Verify Deployment Status:
+
+- ArgoCD Pods:
+kubectl get pods -n argocd
+
+- ArgoCD Service:
+kubectl get svc -n argocd
+
+- ArgoCD Ingress:
+kubectl get ingress -n argocd 
+
+- Ingress Controller Pods:
+kubectl get pod -n ingress-nginx
+
+- Ingress Controller Service:
+kubectl get svc -n ingress-nginx
+
 ```
+## Step-11: Create Ingress File 
+```
+Create Ingress File with any Name (In Our Case we create "nginx-ingress.yml" File)
+
+#  vi nginx-ingress.yml
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd-server-http-ingress
+  namespace: argocd
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS" #(Sometime it work with HTTPS and Sometime it work with HTTP Protocol, Also change Port number as well according to your Protocol HTTPS Or HTTP)
+    nginx.ingress.kubernetes.io/service-upstream: "true"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+spec:
+  
+  rules:
+  - host: argocd.ubei.info
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: argocd-server
+            port:
+              number: 443
+
+# Apply Nginx-Ingress File
+
+kubectl apply -f nginx-ingress.yml
+
+```
+## Step-12: Edit argocd ConfigMap 
+```
+Edit argocd ConfigMap and Update yaml with 
+
+    “ data:
+           server.insecure: "true"  ”
+
+# kubectl edit configmap argocd-cmd-params-cm -n argocd -o yaml
+
+apiVersion: v1
+- **data:
+    server.insecure: "true" **
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"ConfigMap","metadata":{"annotations":{},"labels":{"app.kubernetes.io/name":"argocd-cmd-params-cm","app.kubernetes.io/part-of":"argocd"},"name":"argocd-cmd-params-cm","namespace":"argocd"}}
+  creationTimestamp: "2025-11-02T13:18:49Z"
+  labels:
+    app.kubernetes.io/name: argocd-cmd-params-cm
+    app.kubernetes.io/part-of: argocd
+  name: argocd-cmd-params-cm
+  namespace: argocd
+  resourceVersion: "117859"
+  uid: bceeb42d-ded5-4b3a-acbb-03639e4f1b1d
+
+```
+
 
 ## Step-11: Delete Resources
 Delete the Resources either through the Pipeline Or Manually 
