@@ -322,11 +322,8 @@ ns4-05.azure-dns.info
 - Verify before updation
 
 ```
-
 nslookup -type=SOA ubei.info
 nslookup -type=NS ubei.info
-
-
 ```
 
 
@@ -340,13 +337,12 @@ Output:
 -	Login into your Domain Provider Account (My Domain Registrar: ionos.com)
 -	Click on Add or edit name servers
 -	Update Azure Name servers here and click on Save
--	Wait for Next 48 hours (but usually it update Name Servers within 3-4 hours)
+-	Wait for Next 48 hours (but usually it updates Name Servers within 3-4 hours.)
 -	Verify after updation
 
 ```
 nslookup -type=NS ubei.info 8.8.8.8
 nslookup -type=SOA ubei.info 8.8.8.8
-
 ```
 
 Output:
