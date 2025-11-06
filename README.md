@@ -1,9 +1,10 @@
-# Provision Azure AKS using Terraform & Azure DevOps
+# Provision Azure AKS and Install ArgoCD using Terraform & Azure DevOps
 
-## Step-01: Introduction
-- Create Azure DevOps Pipeline to create AKS cluster using Terraform
+## Step-01: Brief Intro
+- Create Azure DevOps Pipeline to create AKS cluster and Install ArgoCD using Terraform
 - Terraform Manifests Validate
 - Provision Prod AKS Cluster
+- Install ArgoCD Server
 
 
 ## Step-02: Install Azure Market Place Plugins in Azure DevOps
@@ -65,8 +66,8 @@
 
 ### Create Github Repository in Github
 - Create Repository in your github
-- Name: CI-CD-Pipeline-with-Azure-DevOps-Project
-- Descritpion: Provision AKS Cluster using Azure DevOps Pipelines
+- Name: GitOps-Workflow-with-ArgoCD-on-Kubernetes-Project
+- Descritpion: A GitOps Workflow project using ArgoCD on Kubernetes focuses on automating and managing deployments by using Git.
 - Repository Type: Public or Private (As Per Requirement)
 - Click on **Create Repository**
 
@@ -74,41 +75,41 @@
 ```
 # Create folder in local desktop
 
-mkdir CI-CD-Pipeline-with-Azure-DevOps-Project
-cd CI-CD-Pipeline-with-Azure-DevOps-Project
+mkdir GitOps-Workflow-with-ArgoCD-on-Kubernetes-Project
+cd GitOps-Workflow-with-ArgoCD-on-Kubernetes-Project
 
-# Create new folders inside "CI-CD-Pipeline-with-Azure-DevOps-Project" in local desktop
+# Create new folders inside "GitOps-Workflow-with-ArgoCD-on-Kubernetes-Project" in local desktop
 kubernetes-cluster-manifests (Create Yaml Files for Deployment on AKS Cluster)
 terraform-manifests (Create Terraform Files for Provision AKS Cluster)
-Pipelines (It is used for Save Pipeline, while Creating of AKS Cluster via Azure Devops Pipeline)
+Pipelines (It is used for Save Pipeline, while Creating of AKS Cluster, Install ArgoCD and Docker Build Push Image via Azure Devops Pipeline)
 
 
 
 # Initialize Git Repo
-cd CI-CD-Pipeline-with-Azure-DevOps-Project
+cd GitOps-Workflow-with-ArgoCD-on-Kubernetes-Project
 git init
 
 # Add Files & Commit to Local Repo
 git add .
-git commit -am "CI-CD-Pipeline-with-Azure-DevOps-Project"
+git commit -am "GitOps-Workflow-with-ArgoCD-on-Kubernetes-Project"
 
 # Add Remote Origin and Push to Remote Repo
-git remote add origin https://github.com/rahulkrajput/CI-CD-Pipeline-with-Azure-DevOps-Project.git
+git remote add origin https://github.com/rahulkrajput/GitOps-Workflow-with-ArgoCD-on-Kubernetes-Project.git
 git push --set-upstream origin master 
 
 ```     
 
 
 ## Step-05: Create New Azure DevOps Project for IAC
-- Go to -> Azure DevOps -> Select Organization -> CI-CD-Pipeline-For-Provision-AKS-Cluster ->  Create New Project
-- Project Name: Provision Terraform AKS Cluster
-- Project Descritpion: Provision Azure AKS Cluster using Azure DevOps & Terraform
+- Go to -> Azure DevOps -> Select Organization -> GitOps-Workflow-with-ArgoCD-on-Kubernetes ->  Create New Project
+- Project Name: Provision-GitOps-Workflow-with-ArgoCD-on-Terraform-AKS-Cluster
+- Project Descritpion: Provision-GitOps-Workflow-with-ArgoCD-on-Terraform-AKS-Cluster
 - Visibility: Private
 - Click on **Create**
 
 ## Step-06: Create Azure RM Service Connection for Terraform Commands
 - This is a pre-requisite step required during Azure Pipelines
-- Go to -> Azure DevOps -> Select Organization -> Select project **Provision Terraform AKS Cluster**
+- Go to -> Azure DevOps -> Select Organization -> Select project **Provision-GitOps-Workflow-with-ArgoCD-on-Terraform-AKS-Cluster**
 - Go to **Project Settings**
 - Go to Pipelines -> Service Connections -> Create Service Connection
 - Choose a Service Connection type: Azure Resource Manager
@@ -117,17 +118,17 @@ git push --set-upstream origin master
 - Scope Level: Subscription
 - Subscription: Select_Your_Subscription
 - Resource Group: No need to select any resource group
-- Service Connection Name: terraform-aks-cluster-svc-conn
-- Description: Azure RM Service Connection for provisioning AKS Cluster using Terraform on Azure DevOps
+- Service Connection Name: GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn
+- Description: Service Connection for provisioning GitOps workflow with ArgoCD On Terraform AKS Cluster
 - Security: Grant access permissions to all pipelines (check it - leave to default)
 - Click on **SAVE**
 
 
 ## Step-07: Provide Permission to create Azure AD Groups
 - Provide permission for Service connection created in previous step to create Azure AD Groups
-- Go to -> Azure DevOps -> Select Organization -> Select project **Provision Terraform AKS Cluster**
+- Go to -> Azure DevOps -> Select Organization -> Select project **Provision-GitOps-Workflow-with-ArgoCD-on-Terraform-AKS-Cluster**
 - Go to **Project Settings** -> Pipelines -> Service Connections 
-- Open **terraform-aks-cluster-svc-conn**
+- Open **GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn**
 - Click on **Manage App registration**, new tab will be opened 
 - Click on **View API Permissions**
 - Click on **Add Permission**
@@ -164,7 +165,8 @@ Public File: aks-terraform-devops-ssh-key-ubuntu.pub (To be uploaded to Azure De
 ```
 
 ## Step-09: Upload file to Azure DevOps as Secure File
-- Go to Azure DevOps -> CI-CD-Pipeline-For-Provision-AKS-Cluster -> Provision Terraform AKS Cluster -> Pipelines -> Library
+- Go to Azure DevOps -> - Go to -> Azure DevOps -> Select Organization -> GitOps-Workflow-with-ArgoCD-on-Kubernetes ->  Create New Project
+ -> Provision-GitOps-Workflow-with-ArgoCD-on-Terraform-AKS-Cluster -> Pipelines -> Library
 - Secure File -> Upload file named **aks-terraform-devops-ssh-key-ubuntu.pub**
 - Open the file and click on **Pipeline permissions -> Click on three dots -> Confirm open access -> Click on Open access**
 - Click on **SAVE**
@@ -180,7 +182,7 @@ Public File: aks-terraform-devops-ssh-key-ubuntu.pub (To be uploaded to Azure De
 - Click on **Approve and Install** on Github
 ### Configure your Pipeline
 - Select Pipeline: Starter Pipeline  
-- Pipeline Name: 01-Provision-and-Destroy-Terraform-AKS-Cluster-Pipeline.yml
+- Pipeline Name: 01-Provision-and-Destroy-Terraform-AKS-Cluster-&-Install-ArgoCD-Pipeline.yml
 - Design your Pipeline As Per Need
 ### Pipeline Save and Run
 - Click on **Save and Run**
