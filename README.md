@@ -281,8 +281,8 @@ Edit argocd ConfigMap and Update yaml with
 # kubectl edit configmap argocd-cmd-params-cm -n argocd -o yaml
 
 apiVersion: v1
-- **data:
-    server.insecure: "true" **
+data:
+  server.insecure: "true" 
 kind: ConfigMap
 metadata:
   annotations:
