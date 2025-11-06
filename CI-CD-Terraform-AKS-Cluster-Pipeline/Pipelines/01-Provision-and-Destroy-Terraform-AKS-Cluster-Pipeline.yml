@@ -11,9 +11,8 @@ variables:
 pool: Default
   
 #Stage-1: Terraform Validate Stage
-   ##Step-1: Publish Artifacts to Pipeline 
-   ##Step-2: Install Terraform 
-   ##Step-3: Validate Terraform Manifest
+   ##Step-1: Install Terraform 
+   ##Step-2: Validate Terraform Manifest
 
 stages:
   - stage: TerraformValidate
