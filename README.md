@@ -322,15 +322,20 @@ ns4-05.azure-dns.info
 - Verify before updation
 
 ```
+
 nslookup -type=SOA ubei.info
 nslookup -type=NS ubei.info
 
-# Output:
+
+```
+
+
+Output:
 
 <img width="663" height="319" alt="Image" src="https://github.com/user-attachments/assets/53e9e5f3-35c3-4c38-89e0-3817e270470d" />
 
 
-```
+
 
 -	Login into your Domain Provider Account (My Domain Registrar: ionos.com)
 -	Click on Add or edit name servers
@@ -342,13 +347,14 @@ nslookup -type=NS ubei.info
 nslookup -type=NS ubei.info 8.8.8.8
 nslookup -type=SOA ubei.info 8.8.8.8
 
+```
 
-# Output:
+Output:
 
 <img width="877" height="614" alt="Image" src="https://github.com/user-attachments/assets/8926082f-3f0c-46a2-ba61-1cb6034774cd" />
 
 
-```
+
 ##  Step-15: 
 
 -	Go to RecordSet
