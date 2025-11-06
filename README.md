@@ -370,6 +370,7 @@ To log in to ArgoCD Dashboard, you need to have Credentials First for that.
 - Go to Your Terminal and type the following Command:
 
 ```
+
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 
 # Output
