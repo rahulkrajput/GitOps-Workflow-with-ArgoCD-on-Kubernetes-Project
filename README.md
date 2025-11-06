@@ -225,9 +225,6 @@ kubectl get pods -n argocd
 - ArgoCD Service:
 kubectl get svc -n argocd
 
-- ArgoCD Ingress:
-kubectl get ingress -n argocd 
-
 - Ingress Controller Pods:
 kubectl get pod -n ingress-nginx
 
@@ -271,6 +268,17 @@ spec:
 kubectl apply -f nginx-ingress.yml
 
 ```
+## Step-11A: Verify Ingress Status
+
+```
+kubectl get ingress -n argocd
+```
+Output 
+
+<img width="650" height="70" alt="Image" src="https://github.com/user-attachments/assets/a02068de-b49b-4dc0-815f-9a7d8b033feb" />
+
+
+
 ## Step-12: Edit argocd ConfigMap 
 ```
 Edit argocd ConfigMap and Update yaml with 
