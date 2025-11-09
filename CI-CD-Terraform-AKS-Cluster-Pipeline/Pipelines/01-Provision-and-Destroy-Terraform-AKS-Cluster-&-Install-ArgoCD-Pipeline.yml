@@ -108,63 +108,63 @@ stages:
               #     environmentServiceNameAzureRM: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
 
 
-  - stage: DeployArgoCD
-    dependsOn: DeployProdCluster
-    jobs:
-        - job: DeployArgoCD
-          displayName: DeployArgoCD
-          pool: Default
-          steps: 
-          - task: Kubernetes@1
-            displayName: Install Kubectl
-            inputs:
-              connectionType: 'Azure Resource Manager'
-              azureSubscriptionEndpoint: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
-              azureResourceGroup: 'terraform-aks-prod'
-              kubernetesCluster: 'terraform-aks-prod-cluster'
-              useClusterAdmin: true
-              command: 
-              secretType: 'dockerRegistry'
-              containerRegistryType: 'Azure Container Registry'
-          - task: KubeloginInstaller@0
-            displayName: Install kubelogin
-            inputs:
-              kubeloginVersion: 'latest'
-              gitHubConnection: 'GIT-svc-conn-for-GitOps-Workflow-with-ArgoCD-on-Terraform-AKS-Cluster'
-          - task: AzureCLI@2
-            displayName: Get AKS Credentials
-            inputs:
-              azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
-              scriptType: 'bash'
-              scriptLocation: 'inlineScript'
-              inlineScript: |
-                az aks get-credentials --resource-group terraform-aks-prod --name terraform-aks-prod-cluster --admin --overwrite-existing
+  # - stage: DeployArgoCD
+  #   dependsOn: DeployProdCluster
+  #   jobs:
+  #       - job: DeployArgoCD
+  #         displayName: DeployArgoCD
+  #         pool: Default
+  #         steps: 
+  #         - task: Kubernetes@1
+  #           displayName: Install Kubectl
+  #           inputs:
+  #             connectionType: 'Azure Resource Manager'
+  #             azureSubscriptionEndpoint: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+  #             azureResourceGroup: 'terraform-aks-prod'
+  #             kubernetesCluster: 'terraform-aks-prod-cluster'
+  #             useClusterAdmin: true
+  #             command: 
+  #             secretType: 'dockerRegistry'
+  #             containerRegistryType: 'Azure Container Registry'
+  #         - task: KubeloginInstaller@0
+  #           displayName: Install kubelogin
+  #           inputs:
+  #             kubeloginVersion: 'latest'
+  #             gitHubConnection: 'GIT-svc-conn-for-GitOps-Workflow-with-ArgoCD-on-Terraform-AKS-Cluster'
+  #         - task: AzureCLI@2
+  #           displayName: Get AKS Credentials
+  #           inputs:
+  #             azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+  #             scriptType: 'bash'
+  #             scriptLocation: 'inlineScript'
+  #             inlineScript: |
+  #               az aks get-credentials --resource-group terraform-aks-prod --name terraform-aks-prod-cluster --admin --overwrite-existing
                 
-                kubelogin convert-kubeconfig -l azurecli
-          - task: AzureCLI@2
-            displayName: List AKS Nodes
-            inputs:
-              azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
-              scriptType: 'bash'
-              scriptLocation: 'inlineScript'
-              inlineScript: 'kubectl get nodes'
-          - task: AzureCLI@2
-            inputs:
-              azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
-              scriptType: 'bash'
-              scriptLocation: 'inlineScript'
-              inlineScript: |
-                kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.3.0/deploy/static/provider/cloud/deploy.yaml
+  #               kubelogin convert-kubeconfig -l azurecli
+  #         - task: AzureCLI@2
+  #           displayName: List AKS Nodes
+  #           inputs:
+  #             azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+  #             scriptType: 'bash'
+  #             scriptLocation: 'inlineScript'
+  #             inlineScript: 'kubectl get nodes'
+  #         - task: AzureCLI@2
+  #           inputs:
+  #             azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+  #             scriptType: 'bash'
+  #             scriptLocation: 'inlineScript'
+  #             inlineScript: |
+  #               kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.3.0/deploy/static/provider/cloud/deploy.yaml
                 
-                kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=90s
-          - task: AzureCLI@2
-            inputs:
-              azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
-              scriptType: 'bash'
-              scriptLocation: 'inlineScript'
-              inlineScript: |
-                kubectl create namespace argocd
+  #               kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=90s
+  #         - task: AzureCLI@2
+  #           inputs:
+  #             azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+  #             scriptType: 'bash'
+  #             scriptLocation: 'inlineScript'
+  #             inlineScript: |
+  #               kubectl create namespace argocd
                 
-                kubectl apply --namespace argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+  #               kubectl apply --namespace argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
             
   
