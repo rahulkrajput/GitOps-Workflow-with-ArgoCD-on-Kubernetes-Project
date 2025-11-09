@@ -16,7 +16,7 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
     min_count            = 1
     os_disk_size_gb      = 30
     type           = "VirtualMachineScaleSets"
-    node_public_ip_enabled = true
+    node_public_ip_enabled = false
     node_labels = {
       "nodepool-type" = "system"
       "environment"   = var.environment
