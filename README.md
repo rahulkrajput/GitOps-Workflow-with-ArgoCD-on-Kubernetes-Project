@@ -182,7 +182,7 @@ Public File: aks-terraform-devops-ssh-key-ubuntu.pub (To be uploaded to Azure De
 - Click on **Approve and Install** on Github
 ### Configure your Pipeline
 - Select Pipeline: Starter Pipeline  
-- Pipeline Name: 01-Provision-and-Destroy-Terraform-AKS-Cluster-&-Install-ArgoCD-Pipeline.yml
+- Pipeline Name: 01-Provision-and-Destroy-Terraform-AKS-Cluster-Pipeline.yml
 - Design your Pipeline As Per Need
 ### Pipeline Save and Run
 - Click on **Save and Run**
@@ -464,11 +464,11 @@ kubectl get svc -n kube-web
 
  Now You See, Our Web Page Working Fine.
 
-## Step-11: Delete Resources
+## Step-19: Delete Resources
 Delete the Resources either through the Pipeline Or Manually 
 
 ### Pipeline
-- If you want to Delete Nginx App Deployment then Uncomment "delete task" in Deploy Kubernetes Deployment(pipeline) and re-run the pipeline.
+
 - If you want to Delete AKS Cluster, Uncomment "destroy task" in Provision AKS Cluster(pipeline) and re-run the pipeline
 
 ### Manually
@@ -484,7 +484,9 @@ Delete the Resources either through the Pipeline Or Manually
 - **This is a basic setup for demonstration purposes. In a production environment, you should follow best practices for security and performance.**
 
 ## References
-- [Publish & Download Artifacts in Azure DevOps Pipeline](https://docs.microsoft.com/en-us/azure/devops/pipelines/artifacts/pipeline-artifacts?view=azure-devops&tabs=yaml)
+- [Installation Of ArgoCD](https://argo-cd.readthedocs.io/en/stable/getting_started/)
+- [Kubernetes - Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/)
+- [Installation Of Nginx Ingress-Controller On AKS Cluster with kubectl apply, using YAML manifests](https://kubernetes.github.io/ingress-nginx/deploy/#azure)
 - [Azure DevOps Pipelines - Deployment Jobs](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/deployment-jobs?view=azure-devops)
 - [Azure DevOps Pipelines - Environments](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/environments?view=azure-devops)
 
