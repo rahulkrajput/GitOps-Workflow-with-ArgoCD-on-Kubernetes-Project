@@ -379,15 +379,15 @@ To log in to ArgoCD Dashboard, you need to have Credentials First for that.
 ```
 
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
-
-# Output
+```
+Output
 
 ![Image](https://github.com/user-attachments/assets/d1b0d335-fab1-4d67-bb61-eea1150d2a78)
 
 Username:  admin
 Password:  rMDFxtgp0456-
 
-```
+
 ## Step-17: 
 
 
