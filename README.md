@@ -437,10 +437,13 @@ Output:
 
 - Verify Deployment
 ```
+# To get Namespace
 kubectl get ns
 
+# To get Pods
 kubectl get pod -n kube-web
 
+# To get Service
 kubectl get svc -n kube-web
 ```
 ## Step-18 Check Web-App Working Or Not
