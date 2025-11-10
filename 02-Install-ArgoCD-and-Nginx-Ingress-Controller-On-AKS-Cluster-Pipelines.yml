@@ -47,6 +47,7 @@ stages:
               scriptLocation: 'inlineScript'
               inlineScript: 'kubectl get nodes'
           - task: AzureCLI@2
+            displayName: Install Nginx Ingress Controller
             inputs:
               azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
               scriptType: 'bash'
@@ -56,6 +57,7 @@ stages:
                 
                 kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=90s
           - task: AzureCLI@2
+            displayName: Install ArgoCD
             inputs:
               azureSubscription: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
               scriptType: 'bash'
