@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: Web-App
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/rahulkrajput/GitOps-Workflow-with-ArgoCD-on-Kubernetes-Project/GitOps-ArgoCD.git'
+    path: environment/prod/overlays
+    targetRevision: main
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: kube-Web
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    automated:
+      selfHeal: true
+      prune: true
