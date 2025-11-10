@@ -431,8 +431,35 @@ spec:
 kubectl apply -f Web-App.yml
 ```
 
+Output: 
 
+![Image](https://github.com/user-attachments/assets/b15d69ae-6ec3-454a-9476-d360cb15ec2f)
 
+- Verify Deployment
+```
+kubectl get ns
+
+kubectl get pod -n kube-web
+
+kubectl get svc -n kube-web
+```
+## Step-18 Check Web-App Working Or Not
+
+- To get the IP from Service which we deployed while Deployment
+ ```
+ kubectl get svc -n kube-web
+ ```
+ Output:
+ 
+ ![Image](https://github.com/user-attachments/assets/6a439cdf-2c63-454d-8e25-293e7b26b91e)
+
+ - Copy the External-IP and paste it in browser and check web page working or not
+
+ Output:
+
+ ![Image](https://github.com/user-attachments/assets/66ca3b82-df5d-498b-a694-1e00f598e6dd)
+
+ Now You See, Our Web Page Working Fine.
 
 ## Step-11: Delete Resources
 Delete the Resources either through the Pipeline Or Manually 
