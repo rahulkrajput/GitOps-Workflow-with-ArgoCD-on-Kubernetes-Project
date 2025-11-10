@@ -7,7 +7,8 @@ resources:
 namespace: kube-web
 
 patches:
-- path: 
+- path: #/spec/replicas
   target: 
     kind: Deployment
     name: app1-nginx-deployment
+    replicas: 2
