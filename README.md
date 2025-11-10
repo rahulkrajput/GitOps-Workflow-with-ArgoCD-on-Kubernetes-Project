@@ -390,8 +390,48 @@ Output:
 - Username:  admin
 - Password:  933hQdT-FwpAnePZ
 
+After Login
 
-## Step-17: 
+Output: 
+
+![Image](https://github.com/user-attachments/assets/cff84b6d-7eb4-4d60-a2ae-9b5e9fb7ad80)
+
+
+## Step-17: Create ArgoCD Application
+
+First you to have create Application Yaml file, to Connect with your Git Repo where your Manifests File exists for deploy on AKS Cluster
+
+- vi Web-App.yml
+
+```
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: web-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/rahulkrajput/GitOps-Workflow-with-ArgoCD-on-Kubernetes-Project.git'
+    path: GitOps-ArgoCD/environment/prod/overlays
+    targetRevision: main
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: kube-web
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    automated:
+      selfHeal: true
+      prune: true
+```
+- Apply Web-App.yml File with following Command:
+
+```
+kubectl apply -f Web-App.yml
+```
+
+
 
 
 ## Step-11: Delete Resources

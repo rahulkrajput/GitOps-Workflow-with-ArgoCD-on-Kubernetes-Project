@@ -4,10 +4,10 @@ kind: Kustomization
 resources:
   - ../base
 
-namespace: kube-Web
+namespace: kube-web
 
 patches:
 - path: 
-  target:
-    kind: 
-    name: 
+  target: 
+    kind: Deployment
+    name: app1-nginx-deployment
