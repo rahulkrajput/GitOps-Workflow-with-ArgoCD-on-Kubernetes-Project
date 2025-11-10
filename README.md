@@ -382,11 +382,13 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 
 # Output
 
+![Image](https://github.com/user-attachments/assets/d1b0d335-fab1-4d67-bb61-eea1150d2a78)
+
 Username:  admin
 Password:  rMDFxtgp0456-
 
 ```
-
+## Step-17: 
 
 
 ## Step-11: Delete Resources
