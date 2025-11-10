@@ -275,7 +275,7 @@ kubectl get ingress -n argocd
 ```
 Output:
 
-<img width="650" height="70" alt="Image" src="https://github.com/user-attachments/assets/a02068de-b49b-4dc0-815f-9a7d8b033feb" />
+![Image](https://github.com/user-attachments/assets/7e84f16e-9bef-49db-ac89-ead7eb320cc5)
 
 
 
@@ -364,6 +364,10 @@ Output:
 -	Click on Add
 -	Type Name : argocd
 -	Value : Type your External-IP Address (Which you got when you created Ingress Controller. If want to know about it, go to Terminal & type “ kubectl get svc -n ingress-nginx ”) 
+
+
+![Image](https://github.com/user-attachments/assets/e01fe98c-e2ec-44e0-a58f-6d291c4df4df)
+
 -	Go to Browser type Your host name “argocd.ubei.info”
 
 Output: 
@@ -379,7 +383,7 @@ To log in to ArgoCD Dashboard, you need to have Credentials First for that.
 ```
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 ```
-Output
+Output:
 
 ![Image](https://github.com/user-attachments/assets/d1b0d335-fab1-4d67-bb61-eea1150d2a78)
 
