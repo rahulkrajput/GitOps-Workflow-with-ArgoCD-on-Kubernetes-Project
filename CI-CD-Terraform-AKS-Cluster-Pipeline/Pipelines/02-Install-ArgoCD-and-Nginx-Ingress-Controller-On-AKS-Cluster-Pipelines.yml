@@ -1,7 +1,10 @@
 
 
-trigger: none
-
+trigger: 
+    paths:
+      include:
+        - Pipelines/02-Install-ArgoCD-and-Nginx-Ingress-Controller-On-AKS-Cluster-Pipelines.yml
+        
 pool: Default
   
 
