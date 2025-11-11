@@ -464,7 +464,7 @@ kubectl get svc -n kube-web
 
  Now You See, Our Web Page Working Fine.
 
- # We've now successfully walked through the process of setting up ArgoCD on your Azure Kubernetes Service (AKS) cluster
+ **We've now successfully walked through the process of setting up ArgoCD on your Azure Kubernetes Service (AKS) cluster**
 
 ## Step-19: Delete Resources
 Delete the Resources either through the Pipeline Or Manually 
