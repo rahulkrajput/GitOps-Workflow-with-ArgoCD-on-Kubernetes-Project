@@ -364,7 +364,7 @@ Output:
 -	Go to RecordSet
 -	Click on Add
 -	Type Name : argocd
--	Value : Type your External-IP Address (Which you got when you created Ingress Controller. If want to know about it, go to Terminal & type “ kubectl get svc -n ingress-nginx ”) 
+-	Value : Type your External-IP address (Which you got when you created the Ingress Controller. If want to know about it, go to Terminal & type “ kubectl get svc -n ingress-nginx ”)
 
 
 ![Image](https://github.com/user-attachments/assets/e01fe98c-e2ec-44e0-a58f-6d291c4df4df)
@@ -398,9 +398,9 @@ Output:
 ![Image](https://github.com/user-attachments/assets/cff84b6d-7eb4-4d60-a2ae-9b5e9fb7ad80)
 
 
-## Step-17: Setting Up ArgoCD Application with AKS CLuster and Kustomize 
+## Step-17: Setting Up ArgoCD Application with AKS Cluster and Kustomize 
 
-**First you to have structuring their Kustomize files for different environments, with a suggested directory structure should look like this:**
+**First you have to structuring their Kustomize files for different environments, with a suggested directory structure should look like this:**
 
 ```
 ~/GitOps-ArgoCD
@@ -418,7 +418,7 @@ Output:
                 └── kustomization.yml
 ```
 
-**Create New Application file, to Connect with your Git Repo where your Manifests File exists for deploy on AKS Cluster**
+**Create a New Application file to Connect with your Git repo where your Manifests File exists for deploy on AKS Cluster**
 
 - vi Web-App.yml
 
