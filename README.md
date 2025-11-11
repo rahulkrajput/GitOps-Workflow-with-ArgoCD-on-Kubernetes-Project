@@ -5,6 +5,7 @@
 - Terraform Manifests Validate
 - Provision Prod AKS Cluster
 - Install ArgoCD Server
+- Declarative Management of Kubernetes Objects Using Kustomize
 
 
 ## Step-02: Install Azure Market Place Plugins in Azure DevOps
@@ -397,9 +398,27 @@ Output:
 ![Image](https://github.com/user-attachments/assets/cff84b6d-7eb4-4d60-a2ae-9b5e9fb7ad80)
 
 
-## Step-17: Create ArgoCD Application
+## Step-17: Setting Up ArgoCD Application with AKS CLuster and Kustomize 
 
-First you to have create Application Yaml file, to Connect with your Git Repo where your Manifests File exists for deploy on AKS Cluster
+**First you to have structuring their Kustomize files for different environments, with a suggested directory structure should look like this:**
+
+```
+~/GitOps-ArgoCD
+.
+├── application
+│     └── Web-App.yml
+└── environment
+      └── prod
+          ├── base
+          │     ├── 01-Deployment-Web-App.yml
+          │     ├── 02-Service-Web-App.yml
+          │     └── kustomization.yml
+          └── overlays
+                ├── 01-Deployment-Web-App.yml
+                └── kustomization.yml
+```
+
+**Create New Application file, to Connect with your Git Repo where your Manifests File exists for deploy on AKS Cluster**
 
 - vi Web-App.yml
 
@@ -435,6 +454,8 @@ Output:
 
 ![Image](https://github.com/user-attachments/assets/b15d69ae-6ec3-454a-9476-d360cb15ec2f)
 
+*Once the Application is created, ArgoCD will monitor your Git repository for changes and automatically apply updates to your Kubernetes cluster based on the Kustomize configurations.*
+
 - Verify Deployment
 ```
 # To get Namespace
@@ -464,7 +485,7 @@ kubectl get svc -n kube-web
 
  Now You See, Our Web Page Working Fine.
 
- **We've now successfully walked through the process of setting up ArgoCD on your Azure Kubernetes Service (AKS) cluster**
+ **We've now successfully walked through the process of setting up ArgoCD on your Terraform Azure Kubernetes Service (AKS) cluster using Azure DevOps Pipeline**
 
 ## Step-19: Delete Resources
 Delete the Resources either through the Pipeline Or Manually 
