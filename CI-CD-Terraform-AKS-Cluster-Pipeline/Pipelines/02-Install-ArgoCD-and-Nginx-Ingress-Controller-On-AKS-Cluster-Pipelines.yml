@@ -4,9 +4,19 @@ trigger:
     paths:
       include:
         - Pipelines/02-Install-ArgoCD-and-Nginx-Ingress-Controller-On-AKS-Cluster-Pipelines.yml
-        
+
 pool: Default
   
+#Stage-1: Install-ArgoCD-and-Nginx-Ingress-Controller Stage
+   ##Step-1: Install Kubectl
+   ##Step-2: Install kubelogin
+   ##Step-3: Get AKS Credentials
+   ##Step-4: List AKS Nodes
+   ##Step-5: Install Nginx Ingress Controller
+   ##Step-6: Install ArgoCD
+
+
+#Stage-1: 
 
 stages:
   - stage: DeployArgoCD
