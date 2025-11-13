@@ -50,7 +50,9 @@ stages:
               scriptLocation: 'inlineScript'
               inlineScript: |
                 az aks get-credentials --resource-group terraform-aks-prod --name terraform-aks-prod-cluster --admin --overwrite-existing
+                
                 #kubelogin convert command converts the kubeconfig to different login mode like Login method: devicecode, interactive, spn, ropc, msi, azurecli, azd, workloadidentity, azurepipelines. It may be specified in AAD_LOGIN_METHOD environment variable (default "devicecode"). In ours case we use azurecli.
+                
                 kubelogin convert-kubeconfig -l azurecli
           - task: AzureCLI@2
             displayName: List AKS Nodes
